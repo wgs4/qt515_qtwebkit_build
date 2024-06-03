@@ -38,7 +38,9 @@ export XTUPLE_BUILD="$XTUPLE"
 ```
 
 ### Edit build steps
-Building can sometimes fail, so to make the try-and-error process easier, the build is divided into steps. If a step fails, the script will exit. On re-run, it will continue from the failed step, with the last successful step saved in the `last_successful_step` file under the source directory.
+Building can sometimes fail, so to make the try-and-error process easier, the build is divided into steps. If a step fails, the script will exit. On re-run, it will continue from the failed step, with the last successful step saved in the `last_successful_step` file under the source directory. 
+
+To restart clean build, first remove `last_successful_step` file if it exists in the sources directory `$SRC_DIR`.
 
 You can disable any step by commenting it out.
 
