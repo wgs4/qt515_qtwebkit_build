@@ -1,9 +1,16 @@
 # qt515_qtwebkit_build
 Build scripts: QtWebkit 5.212 for Qt 5.15.x
 
-The script `build_unix.sh` is meant to build patched [QtWebkit](https://github.com/dilshodm/qtwebkit) 5.212 and Qt 5.15.x mainly for macOS. It can also be used for Linux, but it's not well tested there.
+The script `build_unix.sh` is meant to build patched [QtWebkit](https://github.com/dilshodm/qtwebkit) 5.212 and Qt 5.15.x **mainly for macOS**. It can also be used for Linux, but it's not well tested there.
 
 This environment is needed to build the [xTuple](https://github.com/dilshodm/qt-client/) software.
+
+### Pre-requisites
+#### MacOS
+1. xcode
+2. [hombrew](https://brew.sh)
+
+The rest (python3, python2, perl...) will be installed by script if not yet installed (see `install_prerequisites` step).
 
 ### User defined vars
 Edit `User defined vars:` section to setup sources and build directories, software versions:
