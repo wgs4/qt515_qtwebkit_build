@@ -2,15 +2,27 @@
 
 # By Dilshod Mukhtarov <dilshodm@gmail.com> May 2024
 
-# BUILDING XTUPLE:
+# Build XTUPLE script
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" && source "$SCRIPT_DIR/setenv.sh" || exit 1
 
+function num_cores {
+    # Check the number of processor cores based on the OS
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        # macOS
+        sysctl -n hw.ncpu
+    else
+        # Linux
+        nproc
+    fi
+}
+NPROC=$(num_cores) # Number of processors to use for make
+
 # This is need to be done once after checking out from git
-cd $XTUPLE/openrpt && qmake CONFIG+=release openrpt.pro && make -j8 && cd $XTUPLE/csvimp && qmake CONFIG+=release csvimp.pro && make -j8
+cd $XTUPLE/openrpt && qmake CONFIG+=release openrpt.pro && make -j $NPROC && cd $XTUPLE/csvimp && qmake CONFIG+=release csvimp.pro && make -j $NPROC
 
 # This is need to me done every time when need to recompile xtuple
-cd $XTUPLE && qmake CONFIG+=release xtuple.pro && make -j8
+cd $XTUPLE && qmake CONFIG+=release xtuple.pro && make -j $NPROC
 
 # This if for MacOS only
 if [[ "$OSTYPE" == "darwin"* ]]; then
@@ -32,11 +44,3 @@ if [[ "$OSTYPE" == "darwin"* ]]; then
     macdeployqt $XTUPLE_BUILD/bin/xtuple.app -dmg
 fi
 
-
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    echo "macos"
-elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
-    echo "linuxos"
-else
-    echo "other"
-fi
