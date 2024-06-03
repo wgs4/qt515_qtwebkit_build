@@ -72,11 +72,7 @@ sh build_qt_unix.sh
 It will take quite some time (1-4 hours depending on hardware).
 
 ### Cleanup build and source dirs
-When build finished all the necessary files will be installed in `$QT_DIR` directory. Source and build directories can be removed (`$SRC_DIR` and `$BUILD_DIR`) using file manager or this commands from shell:
-```sh
-source setenv.sh && rm -rf $SRC_DIR
-source setenv.sh && rm -rf $BUILD_DIR
-```
+When build finished all the necessary files will be installed in `$QT_DIR` directory. Source and build directories can be removed (`$SRC_DIR` and `$BUILD_DIR`) using file manager or terminal commands.
 
 ## Build xTuple
 ### Get the sources
