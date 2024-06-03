@@ -12,17 +12,16 @@
 
 # User defined vars: ===============================================================
 
-SRC_DIR=$HOME/work/src
-BUILD_DIR=$HOME/work/build
-
 PNG_VER=1.6.43      # http://www.libpng.org/pub/png/libpng.html
 JPG_VER=9f          # https://ijg.org/files/
 PSQL_VER=16.3       # https://www.postgresql.org/ftp/source/
 QT_VER=5.15.15      # https://download.qt.io/official_releases/qt/5.15/
 
 # This is for macOS where it will be installed. For linux it might be used pre-installed qt
-#QT_DIR=$HOME/Qt/$QT_VER/clang_64
 QT_DIR=/opt/Qt/$QT_VER/clang_64
+
+SRC_DIR=$HOME/work/src
+BUILD_DIR=$HOME/work/build
 
 # File to track the last successfully completed step
 STATE_FILE="$SRC_DIR/last_successful_step"
@@ -79,10 +78,10 @@ function install_prerequisites {
 
     cd "$SRC_DIR"
 
-    if [ "$OS_TYPE" == "Darwin" ]; then
+    if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS
         install_macos_prerequisites
-    elif [ "$OS_TYPE" == "Linux" ]; then
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
         # Linux
         install_linux_prerequisites
     fi
@@ -211,7 +210,7 @@ function prep_qt {
     (
         echo "Running build step prep_qt..."
 
-        if [ "$OS_TYPE" == "Linux" ]; then
+        if [[ "$OSTYPE" == "linux-gnu"* ]]; then
             return 0
         fi
 
@@ -237,7 +236,7 @@ function build_qt {
     (
         echo "Running build step build_qt..."
 
-        if [ "$OS_TYPE" == "Linux" ]; then
+        if [[ "$OSTYPE" == "linux-gnu"* ]]; then
             return 0
         fi
 
@@ -251,7 +250,7 @@ function install_qt {
     (
         echo "Running build step install_qt..."
 
-        if [ "$OS_TYPE" == "Linux" ]; then
+        if [[ "$OSTYPE" == "linux-gnu"* ]]; then
             return 0
         fi
 
@@ -271,7 +270,7 @@ function prep_webkit {
         mkdir -p "$BUILD_DIR/$WEBKIT_NAME"
         cd "$BUILD_DIR/$WEBKIT_NAME" || return $?
 
-        if [ "$OS_TYPE" == "Darwin" ]; then
+        if [[ "$OSTYPE" == "darwin"* ]]; then
             cmake -G Ninja -DPORT=Qt -DCMAKE_BUILD_TYPE=Release \
                 -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
                 -DQt5_DIR="$QT_DIR/lib/cmake/Qt5" \
@@ -283,7 +282,8 @@ function prep_webkit {
                 -DENABLE_DEVICE_ORIENTATION=OFF \
                 "$SRC_DIR/$WEBKIT_NAME" || return $?
 
-        elif [ "$OS_TYPE" == "Linux" ]; then
+        else
+            # Linux
             cmake -G Ninja -DPORT=Qt -DCMAKE_BUILD_TYPE=Release \
                 -DCMAKE_CXX_STANDARD=17 \
                 -DQt5_DIR="$QT_DIR/lib/cmake/Qt5" \
@@ -322,20 +322,11 @@ function install_webkit {
 # HELPER FUNCTIONS ================================================================
 
 function set_cflags {
-    if [ "$OS_TYPE" == "Darwin" ]; then
+    if [[ "$OSTYPE" == "darwin"* ]]; then
         # Build universal binaries for mac osx
         export CFLAGS="-O2 -arch arm64 -arch x86_64"
         export CXXFLAGS="-O2 -arch arm64 -arch x86_64"
         export LDFLAGS="-arch arm64 -arch x86_64"
-
-    elif [ "$OS_TYPE" == "Linux" ]; then
-        # Linux
-         export CFLAGS=""
-        # export CXXFLAGS=""
-        # export LDFLAGS=""
-    else
-        echo "Unsupported operating system: $OS_TYPE" >&2
-        return 1
     fi
 
     return 0
@@ -348,15 +339,12 @@ function set_qmake {
 
 function num_cores {
     # Check the number of processor cores based on the OS
-    if [ "$OS_TYPE" == "Darwin" ]; then
+    if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS
         sysctl -n hw.ncpu
-    elif [ "$OS_TYPE" == "Linux" ]; then
+    else
         # Linux
         nproc
-    else
-        echo "Unsupported operating system: $OS_TYPE" >&2
-        exit 1
     fi
 }
 
@@ -449,7 +437,6 @@ create_dir() {
 # =================================================================================
 
 # Determine the operating system
-OS_TYPE=$(uname -s)
 NPROC=$(num_cores) # Number of processors to use for make
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
