@@ -10,18 +10,10 @@
 # To debug script, uncomment the line below
 #set -x
 
+# Source the user defined variables
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)" && source "$SCRIPT_DIR/setenv.sh" || exit 1
+
 # User defined vars: ===============================================================
-
-PNG_VER=1.6.43      # http://www.libpng.org/pub/png/libpng.html
-JPG_VER=9f          # https://ijg.org/files/
-PSQL_VER=16.3       # https://www.postgresql.org/ftp/source/
-QT_VER=5.15.15      # https://download.qt.io/official_releases/qt/5.15/
-
-# This is for macOS where it will be installed. For linux it might be used pre-installed qt
-QT_DIR=/opt/Qt/$QT_VER/clang_64
-
-SRC_DIR=$HOME/work/src
-BUILD_DIR=$HOME/work/build
 
 # File to track the last successfully completed step
 STATE_FILE="$SRC_DIR/last_successful_step"
@@ -438,7 +430,6 @@ create_dir() {
 
 # Determine the operating system
 NPROC=$(num_cores) # Number of processors to use for make
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Ask for sudo password at the beginning
 #echo "Some commands to install to /usr/local will require sudo access. Please enter it now."
