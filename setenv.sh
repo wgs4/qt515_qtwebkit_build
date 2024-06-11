@@ -3,7 +3,7 @@
 export PNG_VER=1.6.43      # http://www.libpng.org/pub/png/libpng.html
 export JPG_VER=9f          # https://ijg.org/files/
 export PSQL_VER=16.3       # https://www.postgresql.org/ftp/source/
-export QT_VER=5.15.15      # https://download.qt.io/official_releases/qt/5.15/
+export QT_VER=5.15.14      # https://download.qt.io/official_releases/qt/5.15/
 
 # This is for macOS where it will be installed. For linux it might be used pre-installed qt
 export QT_DIR="/opt/Qt/$QT_VER/qt_xtuple"
